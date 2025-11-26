@@ -33,6 +33,8 @@ public class BookService {
         return bookRepository.findByAuthorContainingIgnoreCase(author);
     }
 
+    public List<Book> filterByTitle(String title) { return bookRepository.findByTitleContainingIgnoreCase(title); }
+
     public List<Book> filterByGenre(String genre) {
         return bookRepository.findByGenreIgnoreCase(genre);
     }
@@ -62,6 +64,7 @@ public class BookService {
         book.setGenre(bookDetails.getGenre());
         book.setPublicationYear(bookDetails.getPublicationYear());
         book.setBookNumber(bookDetails.getBookNumber());
+        book.setImageUrl(bookDetails.getImageUrl());
 
         // Logica stoc: Daca adminul schimba stocul total, trebuie ajustat si cel disponibil
         // (Asta e o simplificare, in realitate e mai complex daca stocul scade sub ce e imprumutat)
@@ -76,20 +79,24 @@ public class BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
-        // VERIFICARE: Nu stergem daca e imprumutata
-        boolean isBorrowed = borrowRecordRepository.existsByUserAndBookAndStatus(null, book, BorrowRecord.BorrowStatus.BORROWED);
-        // Nota: Metoda existsByUserAndBook... de mai sus asteapta un User.
-        // Trebuie sa facem o mica modificare in Repo sau sa iteram.
-        // Solutia mai simpla: Verificam daca exista vreun record BORROWED pentru cartea asta.
-
-        // Voi folosi o logica simplificata aici, iterand prin recorduri (pentru un proiect mic e ok)
+        // 1. Verificam daca exista imprumuturi ACTIVE (Status BORROWED)
+        // Daca da, NU stergem, pentru ca cineva are cartea acasa.
         boolean hasActiveLoans = borrowRecordRepository.findAll().stream()
-                .anyMatch(r -> r.getBook().getId().equals(id) && r.getStatus() == BorrowRecord.BorrowStatus.BORROWED);
+                .anyMatch(r -> r.getBook().getId().equals(id) && r.getStatus() == com.example.digitallibrary.model.BorrowRecord.BorrowStatus.BORROWED);
 
         if (hasActiveLoans) {
             throw new RuntimeException("Nu poti sterge cartea! Este imprumutata momentan.");
         }
 
+        // 2. Daca ajungem aici, inseamna ca nimeni nu are cartea, dar poate exista istoric (RETURNED).
+        // Trebuie sa stergem istoricul vechi ca sa ne lase baza de date sa stergem cartea.
+        List<com.example.digitallibrary.model.BorrowRecord> history = borrowRecordRepository.findAll().stream()
+                .filter(r -> r.getBook().getId().equals(id))
+                .toList();
+
+        borrowRecordRepository.deleteAll(history); // Stergem istoricul
+
+        // 3. Acum putem sterge cartea linistiti
         bookRepository.delete(book);
     }
 }

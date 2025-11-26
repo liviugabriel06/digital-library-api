@@ -13,6 +13,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     // Filtrare dupa Autor (case insensitive)
     List<Book> findByAuthorContainingIgnoreCase(String author);
 
+    // Filtrare dupa titlu
+    List<Book> findByTitleContainingIgnoreCase(String title);
+
     // Filtrare dupa Gen
     List<Book> findByGenreIgnoreCase(String genre);
 

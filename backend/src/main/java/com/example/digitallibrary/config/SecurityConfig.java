@@ -15,6 +15,12 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -29,41 +35,47 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Dezactivam CSRF pentru a putea folosi Postman usor
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // <--- AICI E NOUTATEA (CORS)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Toata lumea are voie sa se inregistreze/logheze
                         .requestMatchers("/auth/**").permitAll()
-
-                        // 2. Toata lumea poate vedea cartile (GET)
                         .requestMatchers(HttpMethod.GET, "/books/**").permitAll()
-
-                        // 3. Doar ADMIN poate adauga/modifica/sterge carti
                         .requestMatchers(HttpMethod.POST, "/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/books/**").hasRole("ADMIN")
-
-                        // 4. Doar USER (si Admin) pot face imprumuturi
                         .requestMatchers("/borrow/**").hasAnyRole("USER", "ADMIN")
-
-                        // Orice altceva cere autentificare
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults()); // Folosim Basic Auth (fereastra de login simpla in browser / Auth header in Postman)
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
+    }
+
+    // Aceasta este metoda noua care permite Frontend-ului sa vorbeasca cu Backend-ul
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Portul Frontend-ului
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService); // Ii spunem sa foloseasca serviciul nostru
-        provider.setPasswordEncoder(passwordEncoder());     // Si encoder-ul nostru
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Asta cripteaza parolele
+        return new BCryptPasswordEncoder();
     }
 
     @Bean

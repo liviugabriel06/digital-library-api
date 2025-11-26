@@ -22,12 +22,16 @@ public class BookController {
     @GetMapping
     public List<Book> getAllBooks(
             @RequestParam(required = false) String author,
+            @RequestParam(required = false) String title,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Boolean available
     ) {
         if (author != null) {
             return bookService.filterByAuthor(author);
+        }
+        if (title != null){
+            return bookService.filterByTitle(title);
         }
         if (genre != null) {
             return bookService.filterByGenre(genre);

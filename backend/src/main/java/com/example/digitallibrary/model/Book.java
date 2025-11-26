@@ -26,6 +26,9 @@ public class Book {
     @Column(unique = true, nullable = false)
     private String bookNumber;
 
+    @Column(length = 500)
+    private String imageUrl;
+
     private Integer totalCopies;
 
     private Integer availableCopies;
