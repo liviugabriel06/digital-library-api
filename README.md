@@ -1,38 +1,49 @@
-# 📚 Digital Library API
+# 📚 Digital Library - Full Stack Application
 
-**Digital Library API** is a robust RESTful backend service built with **Spring Boot 3**. It simulates a real-world library management system, featuring secure user authentication, role-based access control, and comprehensive inventory management with automatic stock tracking.
+**Digital Library** is a comprehensive Full Stack web application designed to simulate a real-world library management system. It features a robust Java Spring Boot backend, a modern React frontend, and a PostgreSQL database, all containerized for easy deployment.
+
+The application manages the entire lifecycle of library operations: book inventory, user authentication, borrowing/returning workflows, and administrative oversight.
 
 ---
 
 ## 🌟 Key Features
 
-* **Smart Stock Management:** The system distinguishes between `Total Copies` and `Available Copies`. Borrowing a book automatically decrements the available stock.
-* **Transactional Integrity:** Uses `@Transactional` to ensure data consistency during borrowing and returning processes.
+### 🎨 Frontend (React + Bootstrap)
+* **User-Friendly Interface:** Modern, responsive design built with React, Vite, and Bootstrap.
+* **Authentication System:** Secure Login and Registration pages with role-based redirection.
+* **Dynamic Dashboard:**
+    * **Public View:** Browse the book catalog with search filters.
+    * **User View:** Borrow books and manage personal active loans ("My Loans").
+    * **Admin View:** Exclusive access to the Admin Dashboard for inventory management.
+* **Smart Search & Filters:** Real-time searching by book title.
+* **Visual Inventory:** Books are displayed with cover images for an enhanced user experience.
+
+### ⚙️ Backend (Spring Boot + PostgreSQL)
+* **Smart Stock Management:** Automatically tracks `Total Copies` vs. `Available Copies`. Borrowing a book decrements stock instantly.
+* **Transactional Integrity:** Uses `@Transactional` to ensure data consistency during complex operations (borrowing/returning).
 * **Validation Rules:**
-    * Cannot borrow if stock is 0.
-    * Cannot delete a book if it is currently borrowed.
-    * Duplicate active loans for the same book are prevented.
-* **Advanced Filtering:** Search books by Author, Genre, Year, or Availability status.
+    * Prevents borrowing if stock is 0.
+    * Prevents duplicate active loans for the same book by the same user.
+    * Prevents deleting a book if it currently has active loans history.
+* **Secure API:** REST endpoints protected by Basic Authentication and Role-Based Access Control (RBAC).
 
 ---
 
 ## 🛠️ Tech Stack
 
-|      Component       |                Technology                |
-|:--------------------:|:----------------------------------------:|
-|     **Language**     |       Java 17 (JDK 21 compatible)        |
-|    **Framework**     | Spring Boot 3 (Web, Data JPA, Security)  |
-|     **Database**     |              PostgreSQL 18               |
-| **Containerization** |                  Docker                  |
-|    **Build Tool**    |                  Maven                   |
-|     **Security**     |      Basic Authentication (BCrypt)       |
-
-
-
+| Component | Technology | Description |
+| :--- | :--- | :--- |
+| **Frontend** | **React (Vite)** | Modern JavaScript library for building UI |
+| **Styling** | **Bootstrap 5** | Responsive CSS framework |
+| **Backend** | **Java 17** | Core programming language |
+| **Framework** | **Spring Boot 3** | Web, Data JPA, Security, Validation |
+| **Database** | **PostgreSQL 15** | Relational database management system |
+| **DevOps** | **Docker** | Containerization for the database |
+| **Build Tools** | **Maven & npm** | Dependency management and build automation |
 
 ---
 
-
+---
 
 
 ## 🚀 Setup & Execution
@@ -45,22 +56,43 @@ The application relies on a PostgreSQL database running in a Docker container.
 docker run --name digital-library-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=digitallibrary -p 5432:5432 -d postgres
 ```
 
-### 2. Running the Application
+### 2. Backend Setup (Java)
+
 1. Open the project in IntelliJ IDEA.
+2. Navigate to the backend folder.
+3. Run DigitalLibraryApplication.java.
+4. The API will start on http://localhost:8080.
 
-2. Locate DigitalLibraryApplication.java.
 
-3. Run the class. The server will start on port 8080.
+### 3. Frontend Setup (React)
+
+1. Open a terminal in the frontend folder.
+2. Install dependencies (first time only).
+
+```bash
+npm install
+```
+
+3. Start the development server.
+
+```bash
+npm run dev
+```
+
 
 ## 🔐 Security & User Roles
 The API is secured using Basic Authentication. You must register users first to interact with the protected endpoints.
 
 
-|  Role  | Username |         Password          |                         Access Level                          |
-|:------:|:--------:|:-------------------------:|:-------------------------------------------------------------:|
-| Admin  |  Admin   |       (your choice)       |           Full Control <br/>(Inventory Management)            |
-|  User  | student  |       (your choice)       | Restricted <br/>(Borrowing, Returning,<br/> Searching and History) |
+| Role | Access Level | Capabilities |
+|:-----|:-------------|:-------------|
+|Admin| Full Control |  • Add, Edit, Delete Books </br> • Manage Inventory & Stock </br>• View All Loans |
+|User|Restricted|   • View Book Catalog </br> • Borrow Books </br> • Return Books </br> • View Personal History|
 
+
+How to create accounts: Use the Register page in the application.
+* Select "Student(User)" for a standard account.
+* Select "Librarian(Admin)" to access administrative features.
 ---
 
 ## 📡 API Endpoints
@@ -96,3 +128,31 @@ Core business logic for loaning and returning items.
 | `GET`  |  `/borrow/my-active`  |  View currently active loans (books not yet returned).    | 🔒 User/Admin  |
 
 
+---
+
+## 📂 Project Structure
+
+The repository is organised as a Monorepo:
+
+```bash
+digital-library/
+├── backend/           # Spring Boot Application (Source Code, pom.xml)
+├── frontend/          # React Application (Source Code, package.json)
+└── README.md          # Documentation
+```
+
+---
+
+### 🎓 Academic Context
+
+This project was developed as a Final Project for the Java Development Course. It successfully implements all required specifications:
+
+* CRUD Operations
+
+* Authentication & Security
+
+* Database Integration
+
+* RESTful Architecture
+
+Additionally, the project was expanded with a complete React Frontend, dynamic stock management logic, and an intuitive user interface.
