@@ -123,7 +123,7 @@ const BookList = () => {
                                                </div>
 
                                                {/* ... footer-ul cu butoane ramane la fel ... */}
-                                               <div className="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center pb-3">
+                                               <div className="card-footer bg-body border-top-0 d-flex justify-content-between align-items-center pb-3">
                                                    <div>
                                                        <span className={`badge rounded-pill ${book.availableCopies > 0 ? 'bg-success' : 'bg-danger'}`}>
                                                            Stock: {book.availableCopies} / {book.totalCopies}

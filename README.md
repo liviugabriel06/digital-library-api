@@ -9,22 +9,19 @@ The application manages the entire lifecycle of library operations: book invento
 ## 🌟 Key Features
 
 ### 🎨 Frontend (React + Bootstrap)
-* **User-Friendly Interface:** Modern, responsive design built with React, Vite, and Bootstrap.
+* **Modern UI/UX:** Responsive design that works perfectly on Desktop and Mobile.
+* **🌗 Dark Mode Support:** Built-in theme switcher (Light/Dark) for better accessibility.
+* **Visual Inventory:** Books are displayed with cover images fetched from URLs.
 * **Authentication System:** Secure Login and Registration pages with role-based redirection.
 * **Dynamic Dashboard:**
-    * **Public View:** Browse the book catalog with search filters.
-    * **User View:** Borrow books and manage personal active loans ("My Loans").
-    * **Admin View:** Exclusive access to the Admin Dashboard for inventory management.
-* **Smart Search & Filters:** Real-time searching by book title.
-* **Visual Inventory:** Books are displayed with cover images for an enhanced user experience.
+  * **Public View:** Browse the book catalog with search filters.
+  * **User View:** Borrow books and manage personal active loans.
+  * **Admin View:** Exclusive access to the Admin Dashboard with Sidebar navigation.
 
 ### ⚙️ Backend (Spring Boot + PostgreSQL)
-* **Smart Stock Management:** Automatically tracks `Total Copies` vs. `Available Copies`. Borrowing a book decrements stock instantly.
-* **Transactional Integrity:** Uses `@Transactional` to ensure data consistency during complex operations (borrowing/returning).
-* **Validation Rules:**
-    * Prevents borrowing if stock is 0.
-    * Prevents duplicate active loans for the same book by the same user.
-    * Prevents deleting a book if it currently has active loans history.
+* **Smart Stock Management:** Automatically tracks `Total Copies` vs. `Available Copies`.
+* **Transactional Integrity:** Uses `@Transactional` to ensure data consistency.
+* **Validation Rules:** Prevents borrowing if stock is 0 or deleting books with active history.
 * **Secure API:** REST endpoints protected by Basic Authentication and Role-Based Access Control (RBAC).
 
 ---

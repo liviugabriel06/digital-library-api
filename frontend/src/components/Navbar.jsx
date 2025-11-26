@@ -1,53 +1,74 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const navigate = useNavigate();
-    // Verificam daca exista token ca sa stim daca e logat
     const isLoggedIn = !!localStorage.getItem('auth_token');
-    // Verificam daca e admin
     const isAdmin = localStorage.getItem('role') === 'ROLE_ADMIN';
 
+    // --- LOGICA DARK MODE ---
+    // Citim din memorie sau setam 'light' ca default
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+    useEffect(() => {
+        // Aici se intampla magia: Bootstrap schimba automat culorile
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    };
+    // ------------------------
+
     const handleLogout = () => {
-        // STERGEM TOT din memoria browserului
         localStorage.removeItem('auth_token');
         localStorage.removeItem('username');
         localStorage.removeItem('role');
-
-        // Redirectionam la login
         navigate('/login');
-        // Fortam un refresh scurt ca sa se actualizeze meniul
         window.location.reload();
     };
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg bg-body-tertiary border-bottom">
             <div className="container">
-                <Link className="navbar-brand" to="/">📚 Digital Library</Link>
+                <Link className="navbar-brand fw-bold" to="/">📚 Digital Library</Link>
+
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span className="navbar-toggler-icon"></span>
                 </button>
+
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto align-items-center">
+
+                        {/* BUTONUL DARK MODE */}
+                        <li className="nav-item me-3">
+                            <button
+                                onClick={toggleTheme}
+                                className="btn btn-sm btn-outline-secondary rounded-circle"
+                                style={{width: '40px', height: '40px', fontSize: '1.2rem'}}
+                                title="Toggle Theme"
+                            >
+                                {theme === 'light' ? '🌙' : '☀️'}
+                            </button>
+                        </li>
+
                         <li className="nav-item">
                             <Link className="nav-link" to="/books">Books</Link>
                         </li>
 
-                        {/* Aratam My Loans doar daca e logat */}
                         {isLoggedIn && (
                             <li className="nav-item">
                                 <Link className="nav-link" to="/my-loans">My Loans</Link>
                             </li>
                         )}
 
-                        {/* Aratam Admin Panel DOAR daca e ADMIN */}
                         {isLoggedIn && isAdmin && (
                             <li className="nav-item">
                                 <Link className="nav-link text-warning fw-bold" to="/admin">Admin Panel</Link>
                             </li>
                         )}
 
-                        {/* Logica Login/Logout */}
                         {!isLoggedIn ? (
                             <>
                                 <li className="nav-item">

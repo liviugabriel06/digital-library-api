@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/books/**").hasRole("ADMIN")
                         .requestMatchers("/borrow/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
