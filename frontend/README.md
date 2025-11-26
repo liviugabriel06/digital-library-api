@@ -1,16 +1,42 @@
-# React + Vite
+# ⚛️ Digital Library - Frontend Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the client-side single-page application (SPA) built with **React** and **Vite**. It consumes the Backend API to provide a modern user interface.
 
-Currently, two official plugins are available:
+## 🛠️ Technical Stack
+* **Framework:** React 18
+* **Build Tool:** Vite (Fast HMR)
+* **Styling:** Bootstrap 5 (with Dark Mode support)
+* **Routing:** React Router DOM
+* **HTTP Client:** Axios
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📂 Project Structure
 
-## React Compiler
+```text
+src/
+├── components/      # Reusable UI parts (Navbar, ProtectedRoute)
+├── pages/           # Full pages (Home, Login, BookList, AdminDashboard)
+├── App.jsx          # Main Router configuration
+└── main.jsx         # Entry point (Bootstrap import)
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🔑 Key Features Implementation
 
-## Expanding the ESLint configuration
+### 🛡️ Protected Routes
+* We use a custom wrapper component <ProtectedRoute> to check for the auth_token in localStorage. If the token is missing or the role is insufficient, the user is redirected.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 🌓 Dark Mode
+* Implemented in Navbar.jsx. It toggles the data-bs-theme attribute on the <html> tag and saves the preference in localStorage.
+
+### 📡 API Integration
+* All backend calls are made using axios. The API URL is currently hardcoded to http://localhost:8080.
+  
+## ▶️ How to Run (Standalone)
+
+```bash
+# Install dependencies
+npm install
+
+# Start Development Server
+npm run dev
+```
+The UI will be available at: http://localhost:5173.
