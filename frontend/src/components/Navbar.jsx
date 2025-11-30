@@ -6,12 +6,9 @@ const Navbar = () => {
     const isLoggedIn = !!localStorage.getItem('auth_token');
     const isAdmin = localStorage.getItem('role') === 'ROLE_ADMIN';
 
-    // --- LOGICA DARK MODE ---
-    // Citim din memorie sau setam 'light' ca default
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
     useEffect(() => {
-        // Aici se intampla magia: Bootstrap schimba automat culorile
         document.documentElement.setAttribute('data-bs-theme', theme);
         localStorage.setItem('theme', theme);
     }, [theme]);
@@ -19,7 +16,6 @@ const Navbar = () => {
     const toggleTheme = () => {
         setTheme(prev => prev === 'light' ? 'dark' : 'light');
     };
-    // ------------------------
 
     const handleLogout = () => {
         localStorage.removeItem('auth_token');
@@ -30,9 +26,13 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+        <nav className="navbar navbar-expand-lg bg-body-tertiary border-bottom sticky-top shadow-sm">
             <div className="container">
-                <Link className="navbar-brand fw-bold" to="/">📚 Digital Library</Link>
+                {/* Logo cu iconita din Bootstrap Icons */}
+                <Link className="navbar-brand fw-bold d-flex align-items-center gap-2" to="/">
+                    <i className="bi bi-journal-album text-primary fs-4"></i>
+                    Digital Library
+                </Link>
 
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span className="navbar-toggler-icon"></span>
@@ -41,15 +41,19 @@ const Navbar = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto align-items-center">
 
-                        {/* BUTONUL DARK MODE */}
+                        {/* BUTONUL THEME SCHIMBAT */}
                         <li className="nav-item me-3">
                             <button
                                 onClick={toggleTheme}
-                                className="btn btn-sm btn-outline-secondary rounded-circle"
-                                style={{width: '40px', height: '40px', fontSize: '1.2rem'}}
-                                title="Toggle Theme"
+                                className="btn btn-link nav-link"
+                                style={{textDecoration: 'none'}}
+                                title="Change Theme"
                             >
-                                {theme === 'light' ? '🌙' : '☀️'}
+                                {theme === 'light' ? (
+                                    <i className="bi bi-moon-stars-fill fs-5"></i>
+                                ) : (
+                                    <i className="bi bi-sun-fill fs-5 text-warning"></i>
+                                )}
                             </button>
                         </li>
 
@@ -75,12 +79,12 @@ const Navbar = () => {
                                     <Link className="nav-link" to="/login">Login</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link btn btn-primary text-white ms-2" to="/register">Register</Link>
+                                    <Link className="btn btn-primary btn-sm ms-2 px-3 rounded-pill" to="/register">Register</Link>
                                 </li>
                             </>
                         ) : (
                             <li className="nav-item">
-                                <button onClick={handleLogout} className="btn btn-danger btn-sm ms-3">
+                                <button onClick={handleLogout} className="btn btn-outline-danger btn-sm ms-3 rounded-pill px-3">
                                     Logout
                                 </button>
                             </li>
