@@ -78,11 +78,13 @@ const BookList = () => {
                         background-size: cover; background-position: center;
                         filter: blur(15px) brightness(0.7);
                         transform: scale(1.2);
+                        z-index: 1; /* Fundalul e cel mai jos */
                     }
 
                     /* Imaginea Principala */
                     .book-image-front {
-                        position: relative; z-index: 10;
+                        position: relative;
+                        z-index: 10; /* Imaginea e la mijloc */
                         height: 100%; width: 100%;
                         object-fit: contain;
                         padding: 20px;
@@ -149,7 +151,7 @@ const BookList = () => {
                                         className="book-image-front"
                                     />
                                 ) : (
-                                    <div className="d-flex align-items-center justify-content-center h-100 bg-secondary bg-opacity-25 text-muted">
+                                    <div className="d-flex align-items-center justify-content-center h-100 bg-secondary bg-opacity-25 text-muted position-relative z-1">
                                         <div className="text-center">
                                             <i className="bi bi-journal-x display-1 opacity-50"></i>
                                             <p className="mt-2 fw-bold">No Cover</p>
@@ -157,9 +159,12 @@ const BookList = () => {
                                     </div>
                                 )}
 
-                                {/* Badge-ul Plutitor (MODIFICAT: Albastru Gradient) */}
-                                <div className="position-absolute top-0 end-0 m-3 z-3">
-                                    <span className="badge rounded-pill bg-primary bg-gradient text-white shadow-sm px-3 py-2 fw-bold">
+                                {/* MODIFICAREA AICI:
+                                    1. Am pus zIndex: 20 (ca sa fie peste poza care are z-index 10).
+                                    2. Am pus maxWidth: '85%' si text-truncate (ca sa nu iasa din cadru daca e lung).
+                                */}
+                                <div className="position-absolute top-0 end-0 m-3" style={{ zIndex: 20, maxWidth: '85%' }}>
+                                    <span className="badge rounded-pill bg-primary bg-gradient text-white shadow-sm px-3 py-2 fw-bold d-block text-truncate">
                                         {book.genre}
                                     </span>
                                 </div>
@@ -169,7 +174,6 @@ const BookList = () => {
                                 <h5 className="card-title fw-bold text-truncate" title={book.title}>{book.title}</h5>
                                 <h6 className="card-subtitle mb-3 text-primary fst-italic">{book.author}</h6>
 
-                                {/* INFO CHIPS */}
                                 <div className="mt-auto">
                                     <div className="d-flex gap-2 mb-3">
                                         <span className="badge bg-body-secondary text-body border rounded-1 fw-normal">
