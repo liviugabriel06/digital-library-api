@@ -1,10 +1,16 @@
-# Folosim o imagine de Java 17 pentru build
-FROM maven:3.8.4-openjdk-17 AS build
+# Pasul 1: Build
+FROM maven:3.8.5-openjdk-17 AS build
+# Setăm directorul de lucru în interiorul containerului
+WORKDIR /app
+# Copiem fișierele proiectului
 COPY . .
+# Construim fișierul jar
 RUN mvn clean package -DskipTests
 
-# Rulăm aplicația
-FROM openjdk:17-jdk-slim
-COPY --from=build /target/*.jar app.jar
+# Pasul 2: Run
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+# Copiem jar-ul generat anterior
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
